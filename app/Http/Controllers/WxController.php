@@ -2,29 +2,26 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
-use Illuminate\Foundation\Bus\DispatchesJobs;
-use Illuminate\Foundation\Validation\ValidatesRequests;
-use Illuminate\Routing\Controller as BaseController;
+use Illuminate\Http\Request;
 
-class IndexController extends BaseController
+class WxController extends Controller
 {
-    public function wx()
-    {
+    public function access(){
         $signature = $_GET["signature"];
         $timestamp = $_GET["timestamp"];
         $nonce = $_GET["nonce"];
 	
-        $token = env("MIX_TOKEN");
+        $token = env('MIX_TOKEN');
         $tmpArr = array($token, $timestamp, $nonce);
         sort($tmpArr, SORT_STRING);
         $tmpStr = implode( $tmpArr );
         $tmpStr = sha1( $tmpStr );
     
         if( $tmpStr == $signature ){
-            return $_GET['echostr'];
+            return true;
         }else{
-            return 123;
+            return false;
         }
     }
+    
 }
