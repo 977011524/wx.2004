@@ -16,4 +16,5 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('wx','WxController@access');
+Route::post('wx','WxController@wxEvent');//接受事件推送
+Route::get('token','WxController@token');//获取access_token
