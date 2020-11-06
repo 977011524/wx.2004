@@ -12,5 +12,9 @@
 */
 
 Route::get('/', function () {
+    echo phpinfo();
     return view('welcome');
+
+    
+Route::get('/wx','Index\IndexController@wx');//首页
 });
