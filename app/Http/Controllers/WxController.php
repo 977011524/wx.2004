@@ -177,11 +177,7 @@ class WxController extends Controller
                 'name'    => '百度',
                 'url'     => 'https://www.baidu.com'
             ],
-            [
-                'type'  => 'view',
-                'name'    => '百度',
-                'url'     => 'https://www.baidu.com'
-            ],
+            
         ]
     ];
     // print_r($menu);die;
