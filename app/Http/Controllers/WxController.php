@@ -38,10 +38,12 @@ class WxController extends Controller
           file_put_contents('wx_event.log',$xml_str,FILE_APPEND);
             //把xml的文本转换为对象或数组
             $obj = simplexml_load_string($xml_str); //将文件转换成 对象
-            
+        //    dd($obj);die;
         
            if($obj->MsgType=="event"){
-               if($obj->Event=="subscribe"){    //处理扫码关注
+            //    echo '111';die;
+               if($obj->Event=="subscribe"){ 
+                //    echo '222' ;die;  //处理扫码关注
                    $content = '关注成功';
                    $resule =  $this->xiaoxi($obj,$content);
 
@@ -67,7 +69,7 @@ class WxController extends Controller
                 
                 }
                
-           
+           //
           //TODO 处理业务逻辑
          
 
@@ -96,7 +98,7 @@ class WxController extends Controller
             // echo $url;die;
             $ken = file_get_contents($url);
             $data = json_decode($ken,true);
-            // dd($data);
+            dd($data);die;
             Redis::set($key,$data['access_token']);
             
             Redis::expire($key,3600);
@@ -120,18 +122,14 @@ class WxController extends Controller
 
     //回复关注消息
     public function xiaoxi($obj,$content){
-        $content = "欢迎关注11111";
         $ToUserName = $obj->FromUserName;
         $FromUserName = $obj->ToUserName;
-
-
         $xml="<xml>
-                <ToUserName><![CDATA[".$ToUserName."]]></ToUserName>
-                <FromUserName><![CDATA[".$FromUserName."]]></FromUserName>
-                <CreateTime>time()</CreateTime>
-                <MsgType><![CDATA[text]]></MsgType>
-                <Content><![CDATA[".$content."]]></Content>
-                <MsgId>%s<MsgId>
+                <ToUserName><![CDATA[%s]]></ToUserName>
+                <FromUserName><![CDATA[%s]]></FromUserName>
+                <CreateTime>%s</CreateTime>
+                <MsgType><![CDATA[%s]]></MsgType>
+                <Content><![CDATA[%s]]></Content>
                 </xml>";
 
         $xml_info = sprintf($xml,$ToUserName,$FromUserName,time(),'text',$content);
