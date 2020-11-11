@@ -38,6 +38,7 @@ class WxController extends Controller
           file_put_contents('wx_event.log',$xml_str,FILE_APPEND);
             //把xml的文本转换为对象或数组
             $obj = simplexml_load_string($xml_str); //将文件转换成 对象
+            
         
            if($obj->MsgType=="event"){
                if($obj->Event=="subscribe"){    //处理扫码关注
@@ -102,18 +103,18 @@ class WxController extends Controller
         }
         return Redis::get($key);
     }
-    
+    //天气
     public function weather(){
         $url = 'https://devapi.qweather.com/v7/weather/now?location=101010100&key=ef14d67e99d74715b691c012e9ff4285&gzip=n';
         $weather_url = file_get_contents($url);
-        // $weather_url = '{"code":"200","updateTime":"2020-11-11T11:26+08:00","fxLink":"http://hfx.link/2ax1","now":{"obsTime":"2020-11-11T10:59+08:00","temp":"10","feelsLike":"8","icon":"100","text":"晴","wind360":"90","windDir":"东风","windScale":"1","windSpeed":"5","humidity":"49","precip":"0.0","pressure":"1027","vis":"6","cloud":"10","dew":"1"},"refer":{"sources":["Weather China"],"license":["no commercial use"]}}';
-        // $weather_url = $client->request('get',$url,['verify'=>false]);
+        // dd($weather_url);
         $weather_url = json_decode($weather_url,true);
         $weather_data = $weather_url['now'];
         
         $count_str = '日期：'.date('Y-m-d H:i:s',time()+8).'天气：'.$weather_data['text'].';风向：'.$weather_data['windDir'].';风力等级：'.$weather_data['windScale'];
         return $count_str;
         
+    
     }
 
 
@@ -176,9 +177,14 @@ class WxController extends Controller
                 'name'    => '百度',
                 'url'     => 'https://www.baidu.com'
             ],
+            [
+                'type'  => 'view',
+                'name'    => '百度',
+                'url'     => 'https://www.baidu.com'
+            ],
         ]
     ];
-    
+    // print_r($menu);die;
 
 
         //使用guzzle发起POST请求

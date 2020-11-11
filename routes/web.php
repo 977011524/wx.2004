@@ -16,11 +16,11 @@ Route::get('/', function () {
     return view('welcome');
 });
 Route::prefix('/wx')->group(function(){
-    Route::post('/','WxController@wxEvent');//接受事件推送
+    Route::get('/','WxController@wxEvent');//接受事件推送
     Route::get('/token','WxController@token');
     Route::get('/guzzle2','WxController@guzzle2');//获取access_token
     Route::get('/create_menu','WxController@createMenu');
-    Route::get('/weather','WxController@weather');//
+    Route::get('/weather','WxController@weather');//天气
 });
 
 //TEST路由分组
