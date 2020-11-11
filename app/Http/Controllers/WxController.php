@@ -15,7 +15,7 @@ class WxController extends Controller
     //处理推送事件
     public function wxEvent(){
         // echo __METHOD__;die;
-        echo __LINE__;die;
+        // echo __LINE__;die;
         $signature = $_GET["signature"];
         $timestamp = $_GET["timestamp"];
         $nonce = $_GET["nonce"];
