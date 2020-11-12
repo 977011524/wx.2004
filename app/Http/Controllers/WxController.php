@@ -96,7 +96,7 @@ class WxController extends Controller
                     case'天气:';
                         $count_str = $this->weatherS();          //天气 返回参数
                         $weather = $this->xiaoxi($obj,$count_str);           //xml  返回微信
-                        echo $weather;
+                        return $weather;
                     break; 
                     case'你好';
                         $Content = '您好系统维护中，请稍后再试';
