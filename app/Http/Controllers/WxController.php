@@ -10,10 +10,12 @@ use App\Model\UserModel;
 use GuzzleHttp\Client;
 class WxController extends Controller
 {
-    
+    protected $obj;
 
     //处理推送事件
     public function checkwx(){
+        //测试微信服务器仅限于线上
+        //以下三个参数是由微信服务器发送到本地服务器上的参数，不可以直接访问本地服务器
         $signature = $_GET["signature"];
         $timestamp = $_GET["timestamp"];
         $nonce = $_GET["nonce"];
@@ -24,33 +26,37 @@ class WxController extends Controller
         $tmpStr = implode( $tmpArr );
         $tmpStr = sha1( $tmpStr );
         
-    
+   
         if( $tmpStr == $signature ){
             
             //接受数据
             $xml = file_get_contents('php://input');
-
+ 
             //记录日志
             
             file_put_contents('wx_event.log',$xml,FILE_APPEND);
             $obj = simplexml_load_string($xml);         //将xml文件转换成对象
-
+            
             //判断
             if($obj->MsgType=='event'){
                 //关注
                 if($obj->Event=='subscribe'){
-                    
+                     
                     $wx_user = UserModel::where(['openid'=>$obj->FromUserName])->first();
+                   
                     if($wx_user){
                         $Content = '谢谢再次关注';
                     }else{
                         //关注 方法
                         $Content = '关注成功';
+                        
                         //用户信息
-                        $access_token = $this->Aoken();             //获取access_token
+                        $access_token = $this->token();             //获取access_token
                         // dd($access_token);
                         // $fromusername = $obj->FromUserName;
+                        
                         $url = 'https://api.weixin.qq.com/cgi-bin/user/info?access_token='.$access_token.'&openid='.$obj->FromUserName.'&lang=zh_CN';
+                        
                         $user_json = file_get_contents($url);                 //发送地址  接回来 json 字符串
                         $user_data = json_decode($user_json,true);          //转换成数组
 
@@ -67,7 +73,8 @@ class WxController extends Controller
                     }
                     
                     
-                    $resule = $this->attention($obj,$Content);          //调用回复文本
+                    $resule = $this->xiaoxi($obj,$Content);          //调用回复文本
+                   
                     return $resule;     //关注成功  返回值
                 }
                 //自定义 菜单回复
@@ -75,7 +82,7 @@ class WxController extends Controller
                     switch($obj->EventKey){
                         case'V1001_TODAY_MUSIC';
                             $count_str = $this->weather();          //天气 返回参数
-                            $weather = $this->attention($obj,$count_str);           //xml  返回微信
+                            $weather = $this->xiaoxi($obj,$count_str);           //xml  返回微信
                             echo $weather;
                         break;
                         
@@ -87,17 +94,17 @@ class WxController extends Controller
                 switch($obj->Content){
                     case'天气';
                         $count_str = $this->weather();          //天气 返回参数
-                        $weather = $this->attention($obj,$count_str);           //xml  返回微信
+                        $weather = $this->xiaoxi($obj,$count_str);           //xml  返回微信
                         echo $weather;
                     break; 
                     case'你好';
                         $Content = '您好系统维护中，请稍后再试';
-                        $weather = $this->attention($obj,$Content);           //xml  返回微信
+                        $weather = $this->xiaoxi($obj,$Content);           //xml  返回微信
                         echo $weather;
                     break;
                     case'时间';
                         $time = date('Y-m-d H:i:s',time());
-                        $weather = $this->attention($obj,$time);           //xml  返回微信
+                        $weather = $this->xiaoxi($obj,$time);           //xml  返回微信
                         echo $weather;
                     break; 
                 }
@@ -125,18 +132,20 @@ class WxController extends Controller
         if(empty(Redis::get($key))){
             $url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=".env('WX_APPID')."&secret=".env('WX_APPSEC');
             
-            echo $url;die;
+            // echo $url;die;
             $ken = file_get_contents($url);
             $data = json_decode($ken,true);
-            dd($data);die;
+            // dd($data);die;
             Redis::set($key,$data['access_token']);
             
             Redis::expire($key,3600);
         }
         return Redis::get($key);
+        
     }
     
-
+    
+    
 
     //回复关注消息
     public function xiaoxi($obj,$content){
@@ -218,3 +227,4 @@ class WxController extends Controller
     }
     
 }
+echo __LINE__;die;
