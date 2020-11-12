@@ -20,6 +20,7 @@ class WxController extends Controller
         $timestamp = $_GET["timestamp"];
         $nonce = $_GET["nonce"];
         
+        
         $token = env('WX_TOKEN');
         $tmpArr = array($token, $timestamp, $nonce);
         sort($tmpArr, SORT_STRING);
@@ -93,7 +94,7 @@ class WxController extends Controller
                 //信息 回复
                 switch($obj->Content){
                     case'天气';
-                        $count_str = $this->weather();          //天气 返回参数
+                        $count_str = $this->weatdher();          //天气 返回参数
                         $weather = $this->xiaoxi($obj,$count_str);           //xml  返回微信
                         echo $weather;
                     break; 
@@ -161,6 +162,7 @@ class WxController extends Controller
 
         $xml_info = sprintf($xml,$ToUserName,$FromUserName,time(),'text',$content);
         return $xml_info;
+        
     }
     //上次素材
     public function guzzle2(){
@@ -182,6 +184,7 @@ class WxController extends Controller
         ]);       //发起请求并接受响应
         $data = $response->getBody();
         echo $data;
+        
 
     }
 
@@ -222,9 +225,10 @@ class WxController extends Controller
             'verify' => false,
             'body'   => json_encode($menu,JSON_UNESCAPED_UNICODE),  
         ]);
+        
         $json_data = $response->getBody();
         echo $json_data;
+        echo __LINE__;die;
     }
     
 }
-echo __LINE__;die;
