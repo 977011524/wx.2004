@@ -17,7 +17,7 @@ Route::get('/', function () {
 });
 Route::prefix('/wx')->group(function(){
     //  
-    Route::post('/','WxController@wxEvent');//接受事件推送
+    Route::post('/','WxController@checkwx');//接受事件推送
     Route::get('/token','WxController@token');
     Route::get('/guzzle2','WxController@guzzle2');//获取access_token
     Route::get('/create_menu','WxController@createMenu');
