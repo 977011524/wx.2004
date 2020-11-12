@@ -93,8 +93,8 @@ class WxController extends Controller
             }else if($obj->MsgType=='text'){
                 //信息 回复
                 switch($obj->Content){
-                    case'天气';
-                        $count_str = $this->weatdher();          //天气 返回参数
+                    case'天气:';
+                        $count_str = $this->weatherS();          //天气 返回参数
                         $weather = $this->xiaoxi($obj,$count_str);           //xml  返回微信
                         echo $weather;
                     break; 
