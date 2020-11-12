@@ -94,7 +94,7 @@ class WxController extends Controller
                 //信息 回复
                 switch($obj->Content){
                     case'天气:';
-                        $count_str = $this->weatherS();          //天气 返回参数
+                        $count_str = $this->weather();          //天气 返回参数
                         $weather = $this->xiaoxi($obj,$count_str);           //xml  返回微信
                         return $weather;
                     break; 
