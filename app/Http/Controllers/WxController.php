@@ -195,8 +195,9 @@ class WxController extends Controller
         // echo $url;die;
         $menu = [
             "button"=>[
+                [
                 "type"=>"click",
-                "name"=>"今日歌曲",
+                "name"=>"天气",
                 "key"=>"V1001_TODAY_MUSIC"
             ],[
                 "name"=>"菜单",
@@ -204,17 +205,18 @@ class WxController extends Controller
                     [	
                         "type"=>"view",
                         "name"=>"搜索",
-                        "url"=>"http://www.soso.com/"
+                        "url"=>"http://www.baidu.com/"
                     ],
                     [
                         "type"=>"click",
                         "name"=>"赞一下我们",
                         "key"=>"V1001_GOOD"
                     ]
+            
                 ]
             ],
-        ];
-        
+        ]
+        ];        
         // print_r($menu);die;
 
 
