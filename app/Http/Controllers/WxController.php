@@ -105,6 +105,7 @@ class WxController extends Controller
                     }
                 }
                 
+                
             }else if($obj->MsgType=='text'){
                 //信息 回复
                 switch($obj->Content){
@@ -124,7 +125,7 @@ class WxController extends Controller
                         $weather = $this->xiaoxi($obj,$time);           //xml  返回微信
                         echo $weather;
                     break; 
-                    // echo 123;die;
+                    
                 }
             }
         }
