@@ -229,7 +229,7 @@ class WxController extends Controller
                     ],
                     [
                         "type"=>"click",
-                        "name"=>"赞一下我们",
+                        "name"=>"签到",
                         "key"=>"SING_IN"
                     ]
             
