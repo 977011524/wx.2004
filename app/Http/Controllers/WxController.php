@@ -88,22 +88,18 @@ class WxController extends Controller
                             $weather = $this->xiaoxi($obj,$count_str);           //xml  返回微信
                             echo $weather;
                         break;
+                         //签到按钮
+                         case'SIGN_IN';
+                         $count_str = $this->sign();
+                         // dd($count_str);
+                         // $count_str = '签到成功';
+                         $weather = $this->attention($count_str); 
+                         echo $weather;
+                     break;
                         
                     }
                 }
-                if($obj->Event=='CLICK'){
-                    if($obj->Event=='SING_IN'){
-                        $key = 'USER_SIGN_'.date('y-m-d',time());
-                        $Content = "签到成功";
-                        $user_sign_in = Redis::zrange($key,0,-1);
-                        if(in_array((string)$ToUserName,$user_sign_in)){
-                            $countent = '已经签了，明天再来呗';
-                        }else{
-                            Redis::zadd($key,time(),(string)$ToUserName);
-                        }
-                        $result = $this->xiaoxi($obj,$Content);
-                    }
-                }
+                
                 
                 
             }else if($obj->MsgType=='text'){
@@ -239,7 +235,8 @@ class WxController extends Controller
                 ]
             ],
         ]
-        ];        
+        ];
+          
         // print_r($menu);die;
 
 
@@ -254,6 +251,24 @@ class WxController extends Controller
         $json_data = $response->getBody();
         echo $json_data;
         // echo __LINE__;die;
+    }
+
+    public function sion(){
+        $xml = $this->obj;  //得到xml 数据
+        $fromUser = $xml->FromUserName;
+        $key = 'wx_user:'.$fromUser;        //定义key
+        $time = strtotime(date('Y-m-d',time()));
+                
+        $user_time = Redis::zrange($key,0,-1);
+        //判断
+        if(in_array($time,$user_time)){
+            $Content = '今日已签到';
+        }else{
+            Redis::zAdd($key,$time);    //有序集合
+            $Content = '签到成功';
+        }
+        // dd($Content);
+        return $Content;
     }
     
 }
