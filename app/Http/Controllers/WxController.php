@@ -91,19 +91,19 @@ class WxController extends Controller
                         
                     }
                 }
-                // if($obj->Event=='CLICK'){
-                //     if($obj->Event=='SING_IN'){
-                //         $key = 'USER_SIGN_'.date('y-m-d',time());
-                //         $content = "签到成功";
-                //         $user_sign_in = Redis::zrange($key,0,-1);
-                //         if(in_array((string)$ToUserName,$user_sign_in)){
-                //             $countent = '已经签了，明天再来呗';
-                //         }else{
-                //             Redis::zadd($key,time(),(string)$ToUserName);
-                //         }
-                //         $result = $this->xiaoxi($obj,$content);
-                //     }
-                // }
+                if($obj->Event=='CLICK'){
+                    if($obj->Event=='SING_IN'){
+                        $key = 'USER_SIGN_'.date('y-m-d',time());
+                        $content = "签到成功";
+                        $user_sign_in = Redis::zrange($key,0,-1);
+                        if(in_array((string)$ToUserName,$user_sign_in)){
+                            $countent = '已经签了，明天再来呗';
+                        }else{
+                            Redis::zadd($key,time(),(string)$ToUserName);
+                        }
+                        $result = $this->xiaoxi($obj,$content);
+                    }
+                }
                 
             }else if($obj->MsgType=='text'){
                 //信息 回复
@@ -227,11 +227,11 @@ class WxController extends Controller
                         "name"=>"赞一下我们",
                         "key"=>"V1001_GOOD"
                     ],
-                    // [
-                    //     "type"=>"click",
-                    //     "name"=>"签到",
-                    //     "key"=>"SING_IN"
-                    // ]
+                    [
+                        "type"=>"click",
+                        "name"=>"签到",
+                        "key"=>"SING_IN"
+                    ]
             
                 ]
             ],
