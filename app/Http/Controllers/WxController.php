@@ -32,11 +32,13 @@ class WxController extends Controller
             
             //接受数据
             $xml = file_get_contents('php://input');
+            
  
             //记录日志
             
             file_put_contents('wx_event.log',$xml,FILE_APPEND);
             $obj = simplexml_load_string($xml);         //将xml文件转换成对象
+            $ToUserName = $obj->FromUserName;
             
             //判断
             if($obj->MsgType=='event'){
@@ -46,10 +48,10 @@ class WxController extends Controller
                     $wx_user = UserModel::where(['openid'=>$obj->FromUserName])->first();
                    
                     if($wx_user){
-                        $Content = '谢谢再次关注';
+                        $content = '谢谢再次关注';
                     }else{
                         //关注 方法
-                        $Content = '关注成功';
+                        $content = '关注成功';
                         
                         //用户信息
                         $access_token = $this->token();             //获取access_token
@@ -74,7 +76,7 @@ class WxController extends Controller
                     }
                     
                     
-                    $resule = $this->xiaoxi($obj,$Content);          //调用回复文本
+                    $resule = $this->xiaoxi($obj,$content);          //调用回复文本
                    
                     return $resule;     //关注成功  返回值
                 }
@@ -89,18 +91,31 @@ class WxController extends Controller
                         
                     }
                 }
+                if($obj->Event=='CLICK'){
+                    if($obj->Event=='SING_IN'){
+                        $key = 'USER_SIGN_'.date('y-m-d',time());
+                        $content = "签到成功";
+                        $user_sign_in = Redis::zrange($key,0,-1);
+                        if(in_array((string)$ToUserName,$user_sign_in)){
+                            $countent = '已经签了，明天再来呗';
+                        }else{
+                            Redis::zadd($key,time(),(string)$ToUserName);
+                        }
+                        $result = $this->xiaoxi($obj,$content);
+                    }
+                }
                 
             }else if($obj->MsgType=='text'){
                 //信息 回复
-                switch($obj->Content){
+                switch($obj->content){
                     case'天气:';
                         $count_str = $this->weather();          //天气 返回参数
                         $weather = $this->xiaoxi($obj,$count_str);           //xml  返回微信
                         return $weather;
                     break; 
                     case'你好';
-                        $Content = '您好系统维护中，请稍后再试';
-                        $weather = $this->xiaoxi($obj,$Content);           //xml  返回微信
+                        $content = '您好系统维护中，请稍后再试';
+                        $weather = $this->xiaoxi($obj,$content);           //xml  返回微信
                         echo $weather;
                     break;
                     case'时间';
@@ -211,6 +226,11 @@ class WxController extends Controller
                         "type"=>"click",
                         "name"=>"赞一下我们",
                         "key"=>"V1001_GOOD"
+                    ],
+                    [
+                        "type"=>"click",
+                        "name"=>"赞一下我们",
+                        "key"=>"SING_IN"
                     ]
             
                 ]
