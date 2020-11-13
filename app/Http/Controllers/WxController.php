@@ -124,6 +124,7 @@ class WxController extends Controller
                         $weather = $this->xiaoxi($obj,$time);           //xml  返回微信
                         echo $weather;
                     break; 
+                    // echo 123;die;
                 }
             }
         }
@@ -175,7 +176,7 @@ class WxController extends Controller
                 <MsgType><![CDATA[%s]]></MsgType>
                 <Content><![CDATA[%s]]></Content>
                 </xml>";
-dd($xml);
+// dd($xml);
         $xml_info = sprintf($xml,$ToUserName,$FromUserName,time(),'text',$Content);
         return $xml_info;
         
