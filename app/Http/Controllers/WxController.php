@@ -40,28 +40,6 @@ class WxController extends Controller
             $obj = simplexml_load_string($xml);         //将xml文件转换成对象
             $ToUserName = $obj->FromUserName;
             
-            if($obj->MsgType=='text'){
-                //信息 回复
-                switch($obj->Content){
-                    case'天气';
-                        $count_str = $this->weather();          //天气 返回参数
-                        $weather = $this->xiaoxi($obj,$count_str);           //xml  返回微信
-                        return $weather;
-                    break; 
-                    case'你好';
-                    // echo 123;die;
-                        $Content = '您好系统维护中，请稍后再试';
-                        $weather = $this->xiaoxi($obj,$Content);           //xml  返回微信
-                        echo $weather;
-                    break;
-                    case'时间';
-                        $time = date('Y-m-d H:i:s',time());
-                        $weather = $this->xiaoxi($obj,$time);           //xml  返回微信
-                        echo $weather;
-                    break; 
-                    
-                }
-            }
             //判断
             if($obj->MsgType=='event'){
                 //关注
@@ -128,8 +106,28 @@ class WxController extends Controller
                 }
                 
                 
+            }else if($obj->MsgType=='text'){
+                //信息 回复
+                switch($obj->Content){
+                    case'天气';
+                        $count_str = $this->weather();          //天气 返回参数
+                        $weather = $this->xiaoxi($obj,$count_str);           //xml  返回微信
+                        return $weather;
+                    break; 
+                    case'你好';
+                    // echo 123;die;
+                        $Content = '您好系统维护中，请稍后再试';
+                        $weather = $this->xiaoxi($obj,$Content);           //xml  返回微信
+                        echo $weather;
+                    break;
+                    case'时间';
+                        $time = date('Y-m-d H:i:s',time());
+                        $weather = $this->xiaoxi($obj,$time);           //xml  返回微信
+                        echo $weather;
+                    break; 
+                    
+                }
             }
-
         }
     }
 
