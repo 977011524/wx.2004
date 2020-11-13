@@ -22,6 +22,7 @@ Route::prefix('/wx')->group(function(){
     Route::get('/guzzle2','WxController@guzzle2');//获取access_token
     Route::get('/create_menu','WxController@createMenu');
     Route::get('/weather','WxController@weather');//天气
+    
 });
 
 //TEST路由分组

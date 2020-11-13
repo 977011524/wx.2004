@@ -31,12 +31,12 @@ class WxController extends Controller
         if( $tmpStr == $signature ){
             
             //接受数据
-            $xml = file_get_contents('php://input');
+            $xml = file_get_Contents('php://input');
             
  
             //记录日志
             
-            file_put_contents('wx_event.log',$xml,FILE_APPEND);
+            file_put_Contents('wx_event.log',$xml,FILE_APPEND);
             $obj = simplexml_load_string($xml);         //将xml文件转换成对象
             $ToUserName = $obj->FromUserName;
             
@@ -48,10 +48,10 @@ class WxController extends Controller
                     $wx_user = UserModel::where(['openid'=>$obj->FromUserName])->first();
                    
                     if($wx_user){
-                        $content = '谢谢再次关注';
+                        $Content = '谢谢再次关注';
                     }else{
                         //关注 方法
-                        $content = '关注成功';
+                        $Content = '关注成功';
                         
                         //用户信息
                         $access_token = $this->token();             //获取access_token
@@ -60,7 +60,7 @@ class WxController extends Controller
                         
                         $url = 'https://api.weixin.qq.com/cgi-bin/user/info?access_token='.$access_token.'&openid='.$obj->FromUserName.'&lang=zh_CN';
                         
-                        $user_json = file_get_contents($url);                 //发送地址  接回来 json 字符串
+                        $user_json = file_get_Contents($url);                 //发送地址  接回来 json 字符串
                         $user_data = json_decode($user_json,true);          //转换成数组
 
                         $data = [
@@ -76,7 +76,7 @@ class WxController extends Controller
                     }
                     
                     
-                    $resule = $this->xiaoxi($obj,$content);          //调用回复文本
+                    $resule = $this->xiaoxi($obj,$Content);          //调用回复文本
                    
                     return $resule;     //关注成功  返回值
                 }
@@ -94,28 +94,29 @@ class WxController extends Controller
                 if($obj->Event=='CLICK'){
                     if($obj->Event=='SING_IN'){
                         $key = 'USER_SIGN_'.date('y-m-d',time());
-                        $content = "签到成功";
+                        $Content = "签到成功";
                         $user_sign_in = Redis::zrange($key,0,-1);
                         if(in_array((string)$ToUserName,$user_sign_in)){
                             $countent = '已经签了，明天再来呗';
                         }else{
                             Redis::zadd($key,time(),(string)$ToUserName);
                         }
-                        $result = $this->xiaoxi($obj,$content);
+                        $result = $this->xiaoxi($obj,$Content);
                     }
                 }
                 
             }else if($obj->MsgType=='text'){
                 //信息 回复
-                switch($obj->content){
-                    case'天气:';
+                switch($obj->Content){
+                    case'天气';
                         $count_str = $this->weather();          //天气 返回参数
                         $weather = $this->xiaoxi($obj,$count_str);           //xml  返回微信
                         return $weather;
                     break; 
                     case'你好';
-                        $content = '您好系统维护中，请稍后再试';
-                        $weather = $this->xiaoxi($obj,$content);           //xml  返回微信
+                    // echo 123;die;
+                        $Content = '您好系统维护中，请稍后再试';
+                        $weather = $this->xiaoxi($obj,$Content);           //xml  返回微信
                         echo $weather;
                     break;
                     case'时间';
@@ -131,7 +132,7 @@ class WxController extends Controller
     //天气
     public function weather(){
         $url = 'https://devapi.qweather.com/v7/weather/now?location=101010100&key=ef14d67e99d74715b691c012e9ff4285&gzip=n';
-        $weather_url = file_get_contents($url);
+        $weather_url = file_get_Contents($url);
         // dd($weather_url);
         $weather_url = json_decode($weather_url,true);
         $weather_data = $weather_url['now'];
@@ -149,7 +150,7 @@ class WxController extends Controller
             $url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=".env('WX_APPID')."&secret=".env('WX_APPSEC');
             
             // echo $url;die;
-            $ken = file_get_contents($url);
+            $ken = file_get_Contents($url);
             $data = json_decode($ken,true);
             // dd($data);die;
             Redis::set($key,$data['access_token']);
@@ -164,7 +165,7 @@ class WxController extends Controller
     
 
     //回复关注消息
-    public function xiaoxi($obj,$content){
+    public function xiaoxi($obj,$Content){
         $ToUserName = $obj->FromUserName;
         $FromUserName = $obj->ToUserName;
         $xml="<xml>
@@ -174,8 +175,8 @@ class WxController extends Controller
                 <MsgType><![CDATA[%s]]></MsgType>
                 <Content><![CDATA[%s]]></Content>
                 </xml>";
-
-        $xml_info = sprintf($xml,$ToUserName,$FromUserName,time(),'text',$content);
+dd($xml);
+        $xml_info = sprintf($xml,$ToUserName,$FromUserName,time(),'text',$Content);
         return $xml_info;
         
     }
@@ -192,7 +193,7 @@ class WxController extends Controller
             'multipart' => [
                 [
                     'name' =>'media',
-                'contents' => fopen('121212.png','r')
+                'Contents' => fopen('121212.png','r')
 
                 ],   
             ]
@@ -250,7 +251,7 @@ class WxController extends Controller
         
         $json_data = $response->getBody();
         echo $json_data;
-        echo __LINE__;die;
+        // echo __LINE__;die;
     }
     
 }
