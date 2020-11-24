@@ -44,9 +44,10 @@ class WxController extends Controller
             if($obj->MsgType=='event'){
                 //关注
                 if($obj->Event=='subscribe'){
-                     
+                    
+                    
                     $wx_user = UserModel::where(['openid'=>$obj->FromUserName])->first();
-                   
+                    
                     if($wx_user){
                         $Content = '谢谢再次关注';
                     }else{

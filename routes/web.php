@@ -31,7 +31,18 @@ Route::prefix('/test')->group(function(){
     Route::get('/guzzle2','TestController@guzzle2');//text/guzzle2
     Route::get('/guzzle3','TestController@guzzle3');//text/guzzle3
     Route::get('/json','TestController@json');
+    
+
 });
+//Api控制器
+Route::prefix('/api')->group(function(){
+    Route::get('/test','ApiController@test');
+    Route::get('/login','XcxController@login');
+    Route::get('/goodslist','ApiController@goodslist');
+    Route::get('/shop_page','ApiController@shop_page');
+
+});
+
 
 //Test路由分组
 
